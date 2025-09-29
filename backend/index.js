@@ -1,10 +1,9 @@
-// packages
 import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors"; // 🔹 YANGI
 
-// Utiles
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -18,6 +17,20 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 const app = express();
+
+const allowedOrigins = ['https://mern-e-commerce-store-gray.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Render health checklar uchun origin bo‘lmaydi
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
